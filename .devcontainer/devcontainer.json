@@ -1,0 +1,87 @@
+{
+  "name": "Atuin Development",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    // Docker-in-Docker for building/testing Docker images
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // GitHub CLI for workflow validation and PR management
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Python for mkdocs documentation
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Rust development
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "vadimcn.vscode-lldb",
+        "serayuzgur.crates",
+        // Shell scripting
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+        // Markdown/Documentation
+        "yzhang.markdown-all-in-one",
+        "DavidAnson.vscode-markdownlint",
+        // Git
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        // GitHub Actions
+        "github.vscode-github-actions",
+        // Docker
+        "ms-azuretools.vscode-docker",
+        // Spell checking (matches codespell CI)
+        "streetsidesoftware.code-spell-checker",
+        // General utilities
+        "EditorConfig.EditorConfig"
+      ],
+      "settings": {
+        "rust-analyzer.check.command": "clippy",
+        "rust-analyzer.check.extraArgs": [
+          "--",
+          "-D",
+          "warnings",
+          "-D",
+          "clippy::redundant_clone"
+        ],
+        "rust-analyzer.cargo.features": "all",
+        "[rust]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "rust-lang.rust-analyzer"
+        },
+        "files.watcherExclude": {
+          "**/target/**": true
+        },
+        "cSpell.words": [
+          "atuin",
+          "ratatui"
+        ]
+      }
+    }
+  },
+  "forwardPorts": [
+    // Default Atuin server port
+    8888,
+    // MkDocs development server
+    8000,
+    // PostgreSQL (for integration tests)
+    5432
+  ],
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  "postStartCommand": ".devcontainer/post-start.sh",
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "CARGO_TERM_COLOR": "always"
+  },
+  "mounts": [
+    // Persist cargo registry cache
+    "source=atuin-cargo-cache,target=/usr/local/cargo/registry,type=volume",
+    // Persist cargo git cache
+    "source=atuin-cargo-git,target=/usr/local/cargo/git,type=volume"
+  ]
+}
